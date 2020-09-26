@@ -1,5 +1,5 @@
 # Object Relation Transformer
-
+OK,firstly clone others git codes and make some change on the code
 This is a PyTorch implementation of the Object Relation Transformer published in NeurIPS 2019. You can find the paper [here](https://papers.nips.cc/paper/9293-image-captioning-transforming-objects-into-words.pdf). This repository is largely based on code from Ruotian Luo's Self-critical Sequence Training for Image Captioning GitHub repo, which can be found [here](https://github.com/ruotianluo/self-critical.pytorch). 
 
 The primary additions are as follows:
