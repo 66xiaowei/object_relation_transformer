@@ -26,7 +26,8 @@ from io import BytesIO
 import numpy as np
 import PIL.Image
 import argparse
-
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def _pil_to_nparray(pim):
     image = pim.convert("RGB")
