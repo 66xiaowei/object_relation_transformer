@@ -233,10 +233,10 @@ def BoxRelationalEmbedding(f_g, dim_g=64, wave_len=1000, trignometric_embedding=
     input: np.array of shape=(batch_size, max_nr_bounding_boxes, 4)
     output: np.array of shape=(batch_size, max_nr_bounding_boxes, max_nr_bounding_boxes, 64)
     """
-    #returns a relational embedding for each pair of bboxes, with dimension = dim_g
-    #follow implementation of https://github.com/heefe92/Relation_Networks-pytorch/blob/master/model.py#L1014-L1055
+    # returns a relational embedding for each pair of bboxes, with dimension = dim_g
+    # follow implementation of https://github.com/heefe92/Relation_Networks-pytorch/blob/master/model.py#L1014-L1055
 
-    batch_size = f_g.size(0)
+    batch_size = f_g.size(0)    # f_g[75*54*4]
 
     x_min, y_min, x_max, y_max = torch.chunk(f_g, 4, dim=-1)
 
@@ -245,7 +245,7 @@ def BoxRelationalEmbedding(f_g, dim_g=64, wave_len=1000, trignometric_embedding=
     w = (x_max - x_min) + 1.
     h = (y_max - y_min) + 1.
 
-    #cx.view(1,-1) transposes the vector cx, and so dim(delta_x) = (dim(cx), dim(cx))
+    # cx.view(1,-1) transposes the vector cx, and so dim(delta_x) = (dim(cx), dim(cx))
     delta_x = cx - cx.view(batch_size, 1, -1)
     delta_x = torch.clamp(torch.abs(delta_x / w), min=1e-3)
     delta_x = torch.log(delta_x)
@@ -258,15 +258,15 @@ def BoxRelationalEmbedding(f_g, dim_g=64, wave_len=1000, trignometric_embedding=
     delta_h = torch.log(h / h.view(batch_size, 1, -1))
 
     matrix_size = delta_h.size()
-    delta_x = delta_x.view(batch_size, matrix_size[1], matrix_size[2], 1)
-    delta_y = delta_y.view(batch_size, matrix_size[1], matrix_size[2], 1)
-    delta_w = delta_w.view(batch_size, matrix_size[1], matrix_size[2], 1)
-    delta_h = delta_h.view(batch_size, matrix_size[1], matrix_size[2], 1)
+    delta_x = delta_x.view(batch_size, matrix_size[1], matrix_size[2], 1)  # [75,54,54,1]
+    delta_y = delta_y.view(batch_size, matrix_size[1], matrix_size[2], 1)  # [75,54,54,1]
+    delta_w = delta_w.view(batch_size, matrix_size[1], matrix_size[2], 1)  # [75,54,54,1]
+    delta_h = delta_h.view(batch_size, matrix_size[1], matrix_size[2], 1)  # [75,54,54,1]
 
-    position_mat = torch.cat((delta_x, delta_y, delta_w, delta_h), -1)
+    position_mat = torch.cat((delta_x, delta_y, delta_w, delta_h), -1)     # [75,54,54,4]
 
-    if trignometric_embedding == True:
-        feat_range = torch.arange(dim_g / 8).cuda()
+    if trignometric_embedding == True:   # "3 angle qianru"
+        feat_range = torch.arange(dim_g / 8).cuda()      # range_feat
         dim_mat = feat_range / (dim_g / 8)
         dim_mat = 1. / (torch.pow(wave_len, dim_mat))
 
